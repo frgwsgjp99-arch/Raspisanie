@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>530101-Б · Расписание</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e14;--sf:#111823;--sf2:#182231;--bd:#243247;--tx:#d6e2f0;--mu:#7a8ca3;--g:#39ff88;--c:#4cc9ff;--p:#b48cff;--o:#ffb454;--r:#ff6b81;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#eef2f7;--sf:#fff;--sf2:#e4ebf4;--bd:#c9d5e3;--tx:#142033;--mu:#5b6d85;--g:#0a9d4a;--c:#0a7fb8;--p:#7a4fd6;--o:#c27a0a;--r:#d1304a;color-scheme:light}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px));min-height:100vh;background-image:radial-gradient(var(--bd) 1px,transparent 1px);background-size:22px 22px}
+.top{padding:14px 16px 8px}
+.prompt{color:var(--mu);font-size:12px}.prompt b{color:var(--g)}
+h1{margin:4px 0 2px;font-size:22px;font-weight:800;letter-spacing:-.5px}
+h1 span{color:var(--g)}
+.cur:after{content:"▌";color:var(--g);animation:bl 1s steps(2) infinite}@keyframes bl{50%{opacity:0}}
+.sub{color:var(--mu);font-size:11px}
+.clock{float:right;text-align:right;color:var(--c);font-weight:600;font-size:15px}.clock small{display:block;color:var(--mu);font-weight:400;font-size:10px}
+.hero{margin:10px 16px;padding:14px;border:1px solid var(--g);border-radius:12px;background:linear-gradient(135deg,var(--sf),var(--sf2));box-shadow:0 0 18px color-mix(in srgb,var(--g) 18%,transparent)}
+.hero .lb{font-size:10px;color:var(--g);letter-spacing:1.5px;text-transform:uppercase}
+.hero .nm{font-weight:800;font-size:15px;margin:6px 0 4px;line-height:1.3}
+.hero .mt{color:var(--mu);font-size:11px}
+.bar{height:6px;background:var(--bd);border-radius:4px;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--c),var(--g));width:0;transition:width .6s}
+.days{display:flex;gap:8px;padding:6px 16px 10px;overflow-x:auto;scrollbar-width:none}
+.days::-webkit-scrollbar{display:none}
+.d{flex:0 0 auto;min-width:54px;padding:8px 6px;text-align:center;border:1px solid var(--bd);border-radius:10px;background:var(--sf);color:var(--mu);font:inherit;cursor:pointer}
+.d b{display:block;font-size:14px;color:var(--tx)}.d small{font-size:10px}
+.d.on{border-color:var(--c);background:var(--sf2);box-shadow:0 0 0 1px var(--c)}.d.on b{color:var(--c)}
+.d.td small:after{content:" •";color:var(--g)}
+.win{margin:0 16px 10px;border:1px solid var(--bd);border-radius:12px;background:var(--sf);overflow:hidden}
+.wh{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--sf2);border-bottom:1px solid var(--bd);font-size:11px;color:var(--mu)}
+.wh i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.wh .t{margin-left:6px;color:var(--tx);font-weight:600}.wh .n{margin-left:auto}
+.ls{padding:0}
+.l{display:flex;gap:10px;padding:11px 12px;border-bottom:1px dashed var(--bd);position:relative}
+.l:last-child{border:0}
+.tm{flex:0 0 46px;color:var(--mu);font-size:11px;line-height:1.4}.tm b{color:var(--tx);font-size:12px;display:block}
+.bd{flex:1;min-width:0}
+.bd .s{font-weight:600;line-height:1.3;font-size:13px}
+.bd .m{color:var(--mu);font-size:11px;margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 10px}
+.tag{display:inline-block;padding:1px 6px;border-radius:5px;font-size:10px;font-weight:600;border:1px solid currentColor;margin-right:6px;vertical-align:1px}
+.lec{color:var(--c)}.prac{color:var(--g)}.lab{color:var(--p)}.sem{color:var(--o)}.kmro{color:var(--r)}
+.l.done{opacity:.45}.l.now{background:color-mix(in srgb,var(--g) 10%,transparent)}.l.now:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--g)}
+.l.now .tm b{color:var(--g)}
+.room{color:var(--o)}
+.free{padding:28px 16px;text-align:center;color:var(--mu)}
+.free b{display:block;color:var(--g);font-size:26px;margin-bottom:6px}
+.pane{display:none}.pane.on{display:block}
+.acc .wh{cursor:pointer}.acc .wh .n:after{content:" ▾"}.acc.cl .ls{display:none}.acc.cl .wh .n:after{content:" ▸"}
+.sc{margin:0 16px 10px;padding:12px;border:1px solid var(--bd);border-radius:12px;background:var(--sf)}
+.sc b{display:block;margin-bottom:5px;line-height:1.3}
+.sc .m{color:var(--mu);font-size:11px;display:flex;justify-content:space-between;gap:8px}
+.sc .m span:last-child{color:var(--c);white-space:nowrap}
+.leg{margin:0 16px 10px;font-size:11px;color:var(--mu);line-height:2}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:color-mix(in srgb,var(--sf) 94%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--bd);padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));gap:6px}
+nav button{flex:1;border:0;background:none;color:var(--mu);font:inherit;font-size:10px;padding:6px 0;border-radius:10px;cursor:pointer}
+nav button span{display:block;font-size:19px;margin-bottom:2px}
+nav button.on{color:var(--g);background:var(--sf2)}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="clock" id="clk">--:--<small id="dt"></small></div>
+  <div class="prompt"><b>student@it</b>:~/<span>530101-Б</span>$ ./schedule --курс 2</div>
+  <h1><span>&gt;</span> Группа 530101-Б<span class="cur"></span></h1>
+  <div class="sub">ФТРСваҲИ · шуъбаи рӯзона · нимсолаи 1 · 2026–2027</div>
+</div>
+
+<div id="today" class="pane on">
+  <div class="hero" id="hero"></div>
+  <div class="days" id="days"></div>
+  <div id="dayview"></div>
+</div>
+<div id="week" class="pane"><div id="wk" style="padding-top:6px"></div></div>
+<div id="subj" class="pane"><div style="height:6px"></div><div id="sj"></div>
+  <div class="leg"><span class="tag lec">Лексия</span> лекция <span class="tag prac">Амалӣ</span> практика <span class="tag lab">Озмоишӣ</span> лабораторная <span class="tag sem">Семинар</span> семинар <span class="tag kmro">КМРО</span> СРС с преподавателем</div></div>
+
+<nav>
+  <button class="on" data-p="today"><span>⌘</span>Сегодня</button>
+  <button data-p="week"><span>▦</span>Неделя</button>
+  <button data-p="subj"><span>{ }</span>Предметы</button>
+</nav>
+
+<script>
+var DN=["Душанбе","Сешанбе","Чоршанбе","Панҷшанбе","Ҷумъа","Шанбе"],DR=["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"],DS=["ПН","ВТ","СР","ЧТ","ПТ","СБ"];
+var T=[["8:00","8:50"],["9:00","9:50"],["10:00","10:50"],["11:00","11:50"],["12:00","12:50"],["13:00","13:50"]];
+var TN={lec:"Лексия",prac:"Амалӣ",lab:"Озмоишӣ",sem:"Семинар",kmro:"КМРО"};
+var A="Администриронии системаҳои оператсионӣ",MM="Математикаи мунфасила ва ҳисоббарор",EL="Электротехника ва электроника",HU="Ҳуқуқ аз руи ихтисос",PR="Барномасози дар забонҳои дараҷаи олӣ",LG="Матиқ",AR="Архитектураи МЭҲ ва системаҳо",SI="Сиёсатшиносӣ";
+var bv="Беҳбудов В.Т.",sa="Саидов Ш.А.",na="Назирмадов Д.А.",xo="Холов Ш.Ё.",ra="Раҷабова А.С.",gf="Ғафуров Д.А.";
+var D=[
+[[1,"lec",HU,"Раупова М.Т.","001"],[2,"lec",A,bv,"401"],[3,"sem",HU,"Раупова М.Т.","123"],[4,"prac",MM,sa,"103"],[5,"prac",MM,sa,"120"],[6,"prac",A,bv,"204"]],
+[[1,"lab",EL,na,"223"],[2,"lab",EL,na,"223"],[3,"sem",SI,"Авғонова З.А.","122"],[4,"lec",MM,sa,"410"],[5,"lec",MM,sa,"401"],[6,"kmro",MM,sa,"104"]],
+[[1,"prac",PR,xo,"413"],[2,"prac",PR,xo,"413"],[3,"lab",PR,xo,"413"],[4,"lab",PR,xo,"413"],[5,"lab",PR,xo,"413"],[6,"kmro",PR,xo,"413"]],
+[[1,"lec",PR,xo,"410"],[2,"lec",EL,na,"001"],[3,"lec",SI,"Раҳимов М.Ҳ.","001"],[4,"lec",LG,ra,"307"],[5,"prac",LG,ra,"307"],[6,"kmro",LG,ra,"307"]],
+[[1,"kmro",AR,gf,"204"],[2,"kmro",AR,gf,"204"],[3,"kmro",LG,ra,"204"],[4,"kmro",PR,xo,"—"],[5,"kmro",PR,xo,"—"]],
+[[1,"lec",AR,gf,"404"],[2,"prac",AR,gf,"404"],[3,"sem","Соати кураторӣ",gf,"404"],[4,"kmro",AR,gf,"404"],[5,"kmro",AR,gf,"404"]]];
+var $=function(i){return document.getElementById(i)};
+function now(){var s=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Dushanbe",weekday:"short",hour:"2-digit",minute:"2-digit",day:"numeric",month:"short",hour12:false}).formatToParts(new Date()),o={};s.forEach(function(p){o[p.type]=p.value});
+ var wd=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].indexOf(o.weekday);return{d:wd,m:(+o.hour%24)*60+(+o.minute),str:o.hour+":"+o.minute,date:o.day+" "+o.month}}
+function mn(t){var a=t.split(":");return +a[0]*60+ +a[1]}
+function st(day,pr,n){if(n.d!==day)return n.d>day?"done":"";var a=mn(T[pr-1][0]),b=mn(T[pr-1][1]);return n.m>b?"done":n.m>=a?"now":""}
+function lesson(x,day,n){var c=st(day,x[0],n);return'<div class="l '+c+'"><div class="tm"><b>'+T[x[0]-1][0]+'</b>'+T[x[0]-1][1]+'</div><div class="bd"><div class="s"><span class="tag '+x[1]+'">'+TN[x[1]]+'</span>'+x[2]+'</div><div class="m"><span>👤 '+x[3]+'</span><span class="room">▣ ауд. '+x[4]+'</span></div></div></div>'}
+function win(day,n,acc){var L=D[day],h='<div class="win'+(acc&&day!==n.d?" acc cl":" acc")+'"><div class="wh"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="t">'+DS[day]+'.sh</span><span class="n">'+L.length+' пар</span></div><div class="ls">';
+ return h+L.map(function(x){return lesson(x,day,n)}).join("")+'</div></div>'}
+var sel=-1;
+function paintDays(n){var h="";for(var i=0;i<6;i++)h+='<button class="d'+(i===sel?" on":"")+(i===n.d?" td":"")+'" data-i="'+i+'"><b>'+DS[i]+'</b><small>'+D[i].length+' пар</small></button>';$("days").innerHTML=h}
+function paintDay(n){var L=D[sel];$("dayview").innerHTML='<div style="padding:0 16px 6px;color:var(--mu);font-size:11px">// '+DR[sel]+' · '+DN[sel]+'</div>'+(L.length?win(sel,n,false):"")}
+function hero(n){var h=$("hero"),L=n.d<6?D[n.d]:[],cur=null,nxt=null;
+ L.forEach(function(x){var a=mn(T[x[0]-1][0]),b=mn(T[x[0]-1][1]);if(n.m>=a&&n.m<=b)cur=x;else if(n.m<a&&!nxt)nxt=x});
+ if(cur){var a=mn(T[cur[0]-1][0]);h.innerHTML='<div class="lb">● идёт сейчас · пара '+cur[0]+'</div><div class="nm">'+cur[2]+'</div><div class="mt">'+TN[cur[1]]+' · '+cur[3]+' · ауд. '+cur[4]+' · осталось '+(a+50-n.m)+' мин</div><div class="bar"><i style="width:'+Math.min(100,(n.m-a)/50*100)+'%"></i></div>'}
+ else if(nxt){var a2=mn(T[nxt[0]-1][0])-n.m;h.innerHTML='<div class="lb">→ следующая через '+(a2>=60?Math.floor(a2/60)+" ч ":"")+a2%60+' мин</div><div class="nm">'+nxt[2]+'</div><div class="mt">'+T[nxt[0]-1][0]+' · '+TN[nxt[1]]+' · '+nxt[3]+' · ауд. '+nxt[4]+'</div>'}
+ else{var nd=(n.d+1)%7;if(nd===6)nd=0;h.innerHTML='<div class="free"><b>exit 0</b>'+(n.d>5?"Сегодня выходной — отдыхай":"Пары на сегодня закончились")+'.<br>Дальше: '+DR[nd]+', '+D[nd].length+' пар, старт в 8:00</div>'}}
+function paintWeek(n){$("wk").innerHTML=D.map(function(_,i){return win(i,n,true)}).join("")}
+function paintSubj(){var m={};D.forEach(function(d){d.forEach(function(x){var k=x[2];m[k]=m[k]||{t:{},c:0};m[k].t[x[3]]=1;m[k].c++})});
+ $("sj").innerHTML=Object.keys(m).sort(function(a,b){return m[b].c-m[a].c}).map(function(k){return'<div class="sc"><b>'+k+'</b><div class="m"><span>'+Object.keys(m[k].t).join(", ")+'</span><span>'+m[k].c+' пар/нед</span></div></div>'}).join("")}
+function tick(){var n=now();$("clk").firstChild.nodeValue=n.str;$("dt").textContent=n.date;hero(n);if(sel<0){sel=n.d>5?0:n.d}paintDays(n);paintDay(n);paintWeek(n)}
+document.addEventListener("click",function(e){var d=e.target.closest(".d");if(d){sel=+d.dataset.i;var n=now();paintDays(n);paintDay(n);return}
+ var w=e.target.closest(".acc .wh");if(w){w.parentNode.classList.toggle("cl");return}
+ var b=e.target.closest("nav button");if(b){document.querySelectorAll("nav button,.pane").forEach(function(x){x.classList.remove("on")});b.classList.add("on");$(b.dataset.p).classList.add("on");scrollTo(0,0)}});
+var tg=window.Telegram&&Telegram.WebApp;if(tg){try{tg.ready();tg.expand();tg.setHeaderColor("#0a0e14");tg.setBackgroundColor("#0a0e14");document.documentElement.setAttribute("data-theme","dark");document.addEventListener("click",function(e){if(e.target.closest(".d,nav button,.wh")&&tg.HapticFeedback)tg.HapticFeedback.selectionChanged()})}catch(e){}}
+paintSubj();tick();setInterval(function(){var n=now();$("clk").firstChild.nodeValue=n.str;hero(n)},30000);
+</script>
+</body>
+</html>
